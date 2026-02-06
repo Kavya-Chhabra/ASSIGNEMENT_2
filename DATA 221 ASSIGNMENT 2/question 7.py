@@ -43,6 +43,7 @@ for paragraph in paragraphs:
 
     #check the length after stripping the whitespace
     if len(paragraph_text) >= 50:
+
         #printing the label
         print("\nFirst paragraph:")
 
