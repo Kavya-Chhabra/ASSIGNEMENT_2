@@ -131,7 +131,7 @@ writer = csv.writer(output_file)
 #Write the header row first
 writer.writerow(headers_row)
 
-#Write the data rows
+# Write the data rows
 for r in padded_data_rows:
     writer.writerow(r)
 
