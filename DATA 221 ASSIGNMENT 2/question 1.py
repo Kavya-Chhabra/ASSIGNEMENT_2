@@ -41,6 +41,7 @@ for token in tokens:
     #make sure to only keep the word if it has at least 2 letters
     if letter_count >= 2:
         words.append(token)
+
 #make a dictionary to count word frequencies
 word_counts = {}
 
