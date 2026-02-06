@@ -10,67 +10,67 @@ import string
 from os import WCONTINUED
 
 # Open the file and read all lines
-file = open("sample-file.txt", "r", encoding="utf-8")
-lines = file.readlines()
-file.close()
+input_file = open("sample-file.txt", "r", encoding="utf-8")
+all_lines_in_the_file = input_file.readlines()
+input_file.close()
 
 #Dictionary to group lines
 # key = normalized line
 # value = list of (line_number, original_line)
-groups= {}
+normalized_line_groups= {}
 
 #Go through each line in the file
-for i in range (len(lines)):
-    original_line = lines[i].strip()
+for line_index in range (len(all_lines_in_the_file)):
+    original_line_text = all_lines_in_the_file[line_index].strip()
 
     #Build the normalized version of the line
-    normalized = ""
+    normalized_line_text = ""
 
-    for char in original_line:
+    for character in original_line_text:
 
     #skip spaces and tabs
-        if char.isspace():
+        if character.isspace():
             continue
 
     #skip punctuation
-        if char in string.punctuation:
+        if character in string.punctuation:
             continue
 
     #add lowercase version of the character
-        normalized += char.lower()
+        normalized_line_text += character.lower()
 
     #ignore empty lines
-    if normalized == "":
+    if normalized_line_text == "":
         continue
 
     # group lines with the same normalized version
-    if normalized in groups:
-        groups[normalized].append( (i + 1,original_line))
+    if normalized_line_text in normalized_line_groups:
+        normalized_line_groups[normalized_line_text].append( (line_index + 1,original_line_text))
     else:
-        groups[normalized] = [(i + 1, original_line)]
+        normalized_line_groups[normalized_line_text] = [(line_index + 1, original_line_text)]
 
 #creating a list for storing only near-duplicate sets
 duplicate_sets = []
 
 # Keep only groups that contain more than one line
-for key in groups:
-    if len(groups[key]) > 1:
-        duplicate_sets.append(groups[key])
+for normalized_key in normalized_line_groups:
+    if len(normalized_line_groups[normalized_key]) > 1:
+        duplicate_sets.append(normalized_line_groups[normalized_key])
 
 #print the number of near-duplicate sets
 print("Number of near-duplicate sets:", len(duplicate_sets))
 
 # print the first two sets
-max_sets_to_print = 2
+maximum_sets_to_print = 2
 if len(duplicate_sets) < 2:
-    max_sets_to_print = len(duplicate_sets)
+    maximum_sets_to_print = len(duplicate_sets)
 
 #now we print hte first two near-duplicate sets
-for s in range (max_sets_to_print):
-    print("\nSet", s+1)
+for set_index in range (maximum_sets_to_print):
+    print("\nSet", set_index+1)
 
     #Each set contains line numbers and the original lines
-    for line_number, text in duplicate_sets [s]:
+    for line_number, text in duplicate_sets [set_index]:
 
         # Print the line number and original line text
         print(str(line_number) + ":", text)
