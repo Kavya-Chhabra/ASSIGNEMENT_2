@@ -11,55 +11,55 @@
 import string
 
 #first we must open the file in read mode and read everything inside of it
-file = open("sample-file.txt", "r", encoding="utf-8")
+text_file = open("sample-file.txt", "r", encoding="utf-8")
 
 #read the file contents into one long string
-text = file.read()
+full_text_contents = text_file.read()
 
 #make sure to always close the file, learned from CPSC 217
-file.close()
+text_file.close()
 
 #now we split the text into tokens using spaces, each token will be approximately one "word"
-tokens = text.split()
+raw_word_tokens = full_text_contents.split()
 
 #This list will store cleaned words that we must keep
-words = []
+cleaned_word_list = []
 
 #now we clean the tokens one by one
-for token in tokens:
+for token in raw_word_tokens:
     #must convert the words into lower case so that all the words are consistently matching
-    token = token.lower()
+    cleaned_token = token.lower()
 
     #now remove the punctuation(commas,)
-    token = token.strip(string.punctuation)
+    cleaned_oken = token.strip(string.punctuation)
 
     #count the number of letters in the token
-    letter_count = 0
-    for char in token:
-        if char.isalpha():
-            letter_count += 1
+    alphabetic_letter_count = 0
+    for character in cleaned_token:
+        if character.isalpha():
+            alphabetic_letter_count += 1
     #make sure to only keep the word if it has at least 2 letters
-    if letter_count >= 2:
-        words.append(token)
+    if alphabetic_letter_count >= 2:
+        cleaned_word_list.append(token)
 
 #make a dictionary to count word frequencies
-word_counts = {}
+word_frequency_dictionary = {}
 
-for word in words:
-    if word in word_counts:
-        word_counts[word] += 1
+for word in cleaned_word_list:
+    if word in word_frequency_dictionary:
+        word_frequency_dictionary[word] += 1
     else:
-        word_counts[word] = 1
+        word_frequency_dictionary[word] = 1
 
 #Convert dictionary to a list of (word,count) pairs
-word_list = list(word_counts.items())
+word_count_pairs = list(word_frequency_dictionary.items())
 
 #sort by count from highest to lowest
-word_list.sort(key=lambda x: x[1], reverse=True)
+word_count_pairs.sort(key=lambda x: x[1], reverse=True)
 
 #print the top 10 most frequent words
 for word_occurring_most_frequently in range (10):
-    word = word_list[word_occurring_most_frequently][0]
-    count = word_list[word_occurring_most_frequently][1]
-    print(word, "->", count)
+    most_common_word = word_count_pairs[word_occurring_most_frequently][0]
+    word_occurrence_count = word_count_pairs[word_occurring_most_frequently][1]
+    print(most_common_word, "->", word_occurrence_count )
 
