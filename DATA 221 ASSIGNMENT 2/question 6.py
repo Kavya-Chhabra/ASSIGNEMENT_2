@@ -15,30 +15,30 @@
 import pandas as pd
 
 #Load the crime.csv dataset into DataFrame
-crime_data = pd.read_csv("crime.csv")
+crime_dataframe = pd.read_csv("crime.csv")
 
 #create a new column called "risk"
 # If ViolentCrimesPerPop >= 0.50 then HighCrime
 #otherwise LowCrime
 
-risk_categories = []
+crime_risk_category_list = []
 
 #Go through each violent crime value in the dataset
-for crime_value in crime_data["ViolentCrimesPerPop"]:
-    if crime_value >= 0.50:
-        risk_categories.append("HighCrime")
+for violent_crime_rate in crime_dataframe["ViolentCrimesPerPop"]:
+    if violent_crime_rate >= 0.50:
+        crime_risk_category_list.append("HighCrime")
     else:
-        risk_categories.append("LowCrime")
+        crime_risk_category_list.append("LowCrime")
 
 #Add the risk categories as a new column in the DataFrame
-crime_data["risk"] = risk_categories
+crime_dataframe["risk"] = crime_risk_category_list
 
 #group the data by the risk column
 #this seperates the dataset into HighCrime and LowCrime groups
-grouped_by_risk = crime_data.groupby("risk")
+crime_groups_by_risk = crime_dataframe.groupby("risk")
 
 #Calaculate the average unemployment rate for each group by using the column percent_of_unemployed_people
-average_unemployment_rates = grouped_by_risk ["PctUnemployed"].mean()
+average_unemployment_rates = crime_groups_by_risk ["PctUnemployed"].mean()
 
 #print the results in a clear format
 print("Average Unemployment rate by Crime Risk Level:\n")
