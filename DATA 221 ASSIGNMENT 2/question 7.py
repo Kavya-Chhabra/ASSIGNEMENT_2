@@ -15,30 +15,30 @@ from bs4 import BeautifulSoup
 
 
 #We have to store the URL in a variable
-url = "https://en.wikipedia.org/wiki/Data_science"
+wikipedia_page_url = "https://en.wikipedia.org/wiki/Data_science"
 
 #this is needed so that Wikipedia treats this request like a real browser
-headers = {"User-Agent":"Mozilla/5.0"}
+request_headers = {"User-Agent":"Mozilla/5.0"}
 
 #sending a request and downloading the page HTML
-response = requests.get(url, headers=headers)
+page_response = requests.get(wikipedia_page_url, headers=request_headers)
 
 
 #Now we will use Beautiful Soup to parse the HTML from the page
-soup = BeautifulSoup(response.text, "html.parser")
+parsed_html_page = BeautifulSoup(page_response.text, "html.parser")
 
 #Extract and print the page title
-title_of_the_page = soup.find("title").get_text()
+title_of_the_page = parsed_html_page.find("title").get_text()
 print("The title of the page is:", title_of_the_page)
 
 #now we must find the paragraph inside the main article
-main_content = soup.find("div",{"id":"mw-content-text"})
+main_content = parsed_html_page.find("div",{"id":"mw-content-text"})
 
 #all the paragraphs will contain all <p> tags under main_content
-paragraphs = main_content.find_all("p")
+paragraph_tag_list = main_content.find_all("p")
 
 # now we go through each paragraph and find the first one that had 50 or more characters
-for paragraph in paragraphs:
+for paragraph in paragraph_tag_list:
     paragraph_text = paragraph.get_text().strip()
 
     #check the length after stripping the whitespace
