@@ -13,31 +13,31 @@
 import pandas as pd
 
 # first we have to load the data from the student.csv
-student_data = pd.read_csv("student.csv")
+student_dataframe = pd.read_csv("student.csv")
 
 #create a new column based on the final grade that includes
 #low: grade<=9
 #medium: grade 10 to 14
 #high: grade>= 15
-grade_bands = []
+grade_band_category_list = []
 
-for grade in student_data["grade"]:
-    if grade <=9:
-        grade_bands.append("Low")
-    elif grade<= 14:
-        grade_bands.append("Medium")
+for final_grade in student_dataframe["grade"]:
+    if final_grade <=9:
+        grade_band_category_list.append("Low")
+    elif final_grade<= 14:
+        grade_band_category_list.append("Medium")
     else:
-        grade_bands.append("High")
+        grade_band_category_list.append("High")
 
 #add the new list as a column in the DataFrame
-student_data["grade_band"] = grade_bands
+student_dataframe["grade_band"] = grade_band_category_list
 
 #Group the data by grade_band and calculate the required values
 #1) number of students
 #2) average absences
 #3) percentage with internet access
 
-summary_table = student_data.groupby("grade_band").agg(
+summary_table = student_dataframe.groupby("grade_band").agg(
     number_of_students = ("grade","count"),
     average_absences = ("absences", "mean"),
     percent_of_students_with_internet=("internet", "mean")
