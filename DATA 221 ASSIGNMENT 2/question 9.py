@@ -14,146 +14,146 @@ from bs4 import BeautifulSoup
 import csv
 
 # Store Wikipedia URL in a variable
-url = "https://en.wikipedia.org/wiki/Machine_learning"
+machine_learning_wikipedia_url = "https://en.wikipedia.org/wiki/Machine_learning"
 
 #Adding a user agent so that wikipedia allows the request
-headers = {"User-Agent": "Mozilla/5.0"}
+browser_request_headers = {"User-Agent": "Mozilla/5.0"}
 
 #Downloading the webpage
-response = requests.get(url, headers=headers)
+wikipedia_page_response = requests.get(machine_learning_wikipedia_url, headers=browser_request_headers)
 
 #Now we will use Beautiful Soup to parse the HTML from the page
-soup = BeautifulSoup(response.text, "html.parser")
+parsed_wikipedia_html = BeautifulSoup(wikipedia_page_response .text, "html.parser")
 
 #now we must find the paragraph inside the main article
-main_content = soup.find("div",{"id":"mw-content-text"})
+main_article_content= parsed_wikipedia_html.find("div",{"id":"mw-content-text"})
 
 #Find all the tables inside the main content
-tables = main_content.find_all("table")
+all_tables_in_main_content = main_article_content.find_all("table")
 
-#this will store the first valid table we find
-chosen_table = None
+#filter out navigation/layout tables
+filtered_candidate_tables= []
+for table_tag in all_tables_in_main_content:
+    table_class_list = table_tag.get("class") or []
 
-#find the first table that has at least 3 data rows(rows with <td> cells)
-for table in tables:
-    rows = table.find_all("tr")
+    #skip if it's a layout table
+    if "navbox" in table_class_list or "vertical-navbox" in table_class_list or "metadata" in table_class_list:
+        continue
 
-    data_row_count = 0
-    max_columns = 0
+    #otherwise keep it as a candidate
+    filtered_candidate_tables.append(table_tag)
+
+#find the first variable with at least 3 data rows (data row = a row with <td> cells)
+# A data row contains actual <td> cells which proves it has actual table data
+chosen_valid_table = None
 
 
-    for row in rows:
-        data_cells = row.find_all("td")
+for table_tag in filtered_candidate_tables:
+    #all rows in this table
+    table_row_tags = table_tag.find_all("tr")
 
-        if len(data_cells) > 0:
-            data_row_count += 1
+    number_of_data_rows = 0
+    maximum_data_columns_seen = 0
 
-            #counting columns properly
-            columns_in_this_row = 0
-            for cell in data_cells:
-                colspan = cell.get("colspan", 1)
-                columns_in_this_row+= int(colspan)
+    # go through the rows and count haw many have data cells
+    for row_tag in table_row_tags:
+        data_cell_tags = row_tag.find_all("td")
 
-            # track the largest number of columns in any row
-            if columns_in_this_row > max_columns:
-                max_columns = columns_in_this_row
+        #considered data row if it has at least on data cell
+        if len(data_cell_tags) > 0:
+            number_of_data_rows += 1
 
-    #We want at least 3 data rows
-    if data_row_count >= 3 and max_columns >=3:
-        chosen_table = table
+            #count the number of columns, track widest data row
+            if len(data_cell_tags) > maximum_data_columns_seen:
+                maximum_data_columns_seen = len(data_cell_tags)
+        #must have at least 3 data rows
+
+    #only decide if it's valid after checking the whole table, need at least 3 rows and 3 columns
+    if number_of_data_rows >= 3 and maximum_data_columns_seen >= 3:
+        chosen_valid_table = table_tag
+        #stop at the first valid table
         break
 
-#If a valid table is not found then stop the program
-if chosen_table is None:
-    print("No table with atleast 3 data rows was found")
+#if valid table is not found then print and stop
+if chosen_valid_table is None:
+    print("No table with at least 3 data rows was found.")
 else:
-    #extract all rows from chosen table
-    table_rows = chosen_table.find_all("tr")
+    #extract rows from the chosen table
+    chosen_table_row_tags = chosen_valid_table.find_all("tr")
 
-    #We'll store the table as a list of lists(rows of text)
-    extracted_rows = []
+    #building a list of rows where each row is a list of cell strings
+    extracted_table_rows_as_lists = []
 
-    #Go through each row and collect cell text from th/td
-    for row in table_rows:
-        cells = row.find_all(["th", "td"])
+    for row_tag in chosen_table_row_tags:
 
-        #convert each cell to clean text
-        row_values = []
-        for cell in cells:
-            cell_text = cell.get_text(separator= " ", strip=True)
-            colspan = int(cell.get("colspan",1))
+        #keep both th and td for detection of header row
+        header_and_data_cells = row_tag.find_all(["th", "td"])
 
-            row_values.append(cell_text)
+        #skip empty rows
+        if len(header_and_data_cells) == 0:
+            continue
 
-            for _ in range(colspan-1):
-                row_values.append("")
+        #convert the cells into cleaned text strings
+        current_row_text_values = []
+        for cell_tag in header_and_data_cells:
+            #separator keeps text readable
+            cleaned_cell_text = cell_tag.get_text(separator=" ", strip=True)
+            current_row_text_values.append(cleaned_cell_text)
 
-        #keep only non-empty rows
-        if len (row_values) >0:
-            extracted_rows.append(row_values)
 
-    #Decide headers, if the first extracted row contains <th> values, treat it as the header row
-    first_row_has_th = (len(table_rows[0].find_all("th")) > 0)
+        extracted_table_rows_as_lists.append(current_row_text_values)
 
-    if first_row_has_th:
-        headers_row = extracted_rows[0]
-        data_rows = extracted_rows[1:]
+        # decide header row:
+        #If the first extracted row has any <th>, treat it as headers. Otherwise create col1..colN.
+    first_row_has_th = (len(chosen_table_row_tags[0].find_all("th")) > 0)
+
+    if first_row_has_th and len(extracted_table_rows_as_lists[0]) > 1:
+        table_header_row = extracted_table_rows_as_lists[0]
+        table_data_rows = extracted_table_rows_as_lists[1:]
     else:
-        #if no headers are present we create default headers
-        #But first find the maximum number of columns in the table
-     max_columns = 0
-     for r in extracted_rows:
-        if len(r) > max_columns:
-            max_columns = len(r)
+        #find maximum columns extracted rows so our default headers match the widest rows
+        maximum_column_count = 0
+        for row_list in extracted_table_rows_as_lists:
+            if len(row_list) > maximum_column_count:
+                maximum_column_count = len(row_list)
 
-    headers_row = []
-    for i in range (1, max_columns + 1):
-       headers_row.append("col" + str(i))
+        table_header_row = []
+        for column_number in range (1, maximum_column_count + 1):
+            table_header_row.append("col" + str(column_number))
 
-    data_rows = extracted_rows
+        table_data_rows = extracted_table_rows_as_lists
 
-#pad the rows so that they all have the same number of columns as the header
-number_of_columns = len(headers_row)
+    #Pad the data rows so that every row has thw same number of columns as the header row
+    total_number_of_columns = len(table_header_row)
+    padded_table_data_rows = []
 
-padded_data_rows = []
-for r in data_rows:
-    #make a copy of the new row
-    new_row = r[:]
+    for original_data_row in table_data_rows:
+        padded_row = original_data_row[:] # we don't want to mess with the original row
 
-    # If the row is too long, cut it down
-    if len(new_row) > number_of_columns:
-        new_row = new_row[:number_of_columns]
+        #if a row is too long then we trim it
+        if len(padded_row) > total_number_of_columns:
+            padded_row = padded_row[:total_number_of_columns]
 
-    #if the row is too short then we have to using an empty string to pad
-    while len(new_row) < number_of_columns:
-        new_row.append("")
+        #if a row is too short then we have to pad it with empty strings
+        while len(padded_row) < total_number_of_columns:
+            padded_row.append("")
 
-    padded_data_rows.append(new_row)
+        padded_table_data_rows.append(padded_row)
 
-#save the table to wiki_table.csv
-output_filename = "wiki_table.csv"
-output_file = open(output_filename, "w", newline="", encoding="utf-8")
+    #write to csv file
+    output_csv_filename = "wiki_table.csv"
+    with open(output_csv_filename, "w", newline="", encoding="utf-8") as csv_output_file:
+        csv_writer = csv.writer(csv_output_file)
 
-#create csv writer
-writer = csv.writer(output_file)
+        #write header first
+        csv_writer.writerow(table_header_row)
 
-#Write the header row first
-writer.writerow(headers_row)
+        #write each padded row
+        for padded_row in padded_table_data_rows:
+            csv_writer.writerow(padded_row)
 
-# Write the data rows
-for r in padded_data_rows:
-    writer.writerow(r)
-
-#close the file
-output_file.close()
-
-#printing results
-print("Saved table to", output_filename)
-print("Columns:", len(headers_row))
-print("Rows saved:", len(padded_data_rows))
-
-
-
-
-
+    #print confirmation
+    print("Saved table to", output_csv_filename)
+    print("columns:", len(table_header_row))
+    print("rows saved:", len(padded_table_data_rows))
 
