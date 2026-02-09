@@ -51,12 +51,12 @@ for table in tables:
             #counting columns properly
             columns_in_this_row = 0
             for cell in data_cells:
-                span_of_column = cell.get("span_of_column", 1)
-                columns_in_this_row += int(span_of_column)
+                colspan = cell.get("colspan", 1)
+                columns_in_this_row+= int(colspan)
 
             # track the largest number of columns in any row
-            if len(data_cells) > max_columns:
-                max_columns = len(data_cells)
+            if columns_in_this_row > max_columns:
+                max_columns = columns_in_this_row
 
     #We want at least 3 data rows
     if data_row_count >= 3 and max_columns >=3:
@@ -81,13 +81,18 @@ else:
         row_values = []
         for cell in cells:
             cell_text = cell.get_text(separator= " ", strip=True)
+            colspan = int(cell.get("colspan",1))
+
             row_values.append(cell_text)
+
+            for _ in range(colspan-1):
+                row_values.append("")
 
         #keep only non-empty rows
         if len (row_values) >0:
             extracted_rows.append(row_values)
+
     #Decide headers, if the first extracted row contains <th> values, treat it as the header row
-    first_row_cells = table_rows[0].find_all(["th", "td"])
     first_row_has_th = (len(table_rows[0].find_all("th")) > 0)
 
     if first_row_has_th:
@@ -97,7 +102,7 @@ else:
         #if no headers are present we create default headers
         #But first find the maximum number of columns in the table
      max_columns = 0
-    for r in extracted_rows:
+     for r in extracted_rows:
         if len(r) > max_columns:
             max_columns = len(r)
 
@@ -108,7 +113,7 @@ else:
     data_rows = extracted_rows
 
 #pad the rows so that they all have the same number of columns as the header
-number_of_columns = len (headers_row)
+number_of_columns = len(headers_row)
 
 padded_data_rows = []
 for r in data_rows:
@@ -118,6 +123,10 @@ for r in data_rows:
     # If the row is too long, cut it down
     if len(new_row) > number_of_columns:
         new_row = new_row[:number_of_columns]
+
+    #if the row is too short then we have to using an empty string to pad
+    while len(new_row) < number_of_columns:
+        new_row.append("")
 
     padded_data_rows.append(new_row)
 
