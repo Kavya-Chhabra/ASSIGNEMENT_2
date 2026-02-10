@@ -69,7 +69,7 @@ for table_tag in filtered_candidate_tables:
         #must have at least 3 data rows
 
     #only decide if it's valid after checking the whole table, need at least 3 rows and 3 columns
-    if number_of_data_rows >= 3 and maximum_data_columns_seen >= 3:
+    if number_of_data_rows >= 3:
         chosen_valid_table = table_tag
         #stop at the first valid table
         break
