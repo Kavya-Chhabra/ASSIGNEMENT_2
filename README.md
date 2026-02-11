@@ -1,10 +1,6 @@
 # DATA 221 Assignment 2
 
 This repository contains my solutions for Assignment 2 in DATA 221.
-
-Each question is written in its own Python file (question 1.py to question 10.py).  
-The assignment focuses on text processing, working with CSV datasets, and basic web scraping using BeautifulSoup.
-
 ---
 
 ## Question Breakdown
