@@ -50,9 +50,8 @@ bigram_list = []
 
 #scan through the word list and create pairs
 for index in range(len(cleaned_word_list)- 1):
-    first_word = cleaned_word_list[index] + " " + cleaned_word_list[index+1]
-    second_word = cleaned_word_list[index + 1]
-    bigram_list.append(first_word + "" + second_word)
+    bigram = cleaned_word_list[index] + " " + cleaned_word_list[index + 1]
+    bigram_list.append(bigram)
 
 # now we must convert the dictionary into a list of (bigram,count) pairs
 bigram_counts = {}
