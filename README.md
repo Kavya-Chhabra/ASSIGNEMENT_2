@@ -45,9 +45,3 @@ The assignment focuses on text processing, working with CSV datasets, and basic 
 - student_bands.csv 
 - headings.txt 
 - wiki_table.csv
-
-## Running the Code
-
-Each script can be run individually, for example:
-
-python question\ 1.py
