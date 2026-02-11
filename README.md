@@ -20,7 +20,8 @@ Question 6 (question 6.py):Uses crime.csv to classify communities into HighCrime
 Question 7 (question 7.py):Scrapes the Wikipedia page for Data Science and prints the page title along with the first main paragraph.
 
 Question 8 (question 8.py):Extracts all main <h2> section headings from the Data Science Wikipedia page excluding reference sections and saves them to headings.txt.
-
 Question 9 (question 9.py): Scrapes the Machine Learning Wikipedia page, finds the first table with at least 3 data rows, extracts the contents, and saves it as wiki_table.csv.
 
 Question 10 (question 10.py):Implements a function that searches through a file and returns all line numbers and text where a keyword appears (case-insensitive).
+
+
