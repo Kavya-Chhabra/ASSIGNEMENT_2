@@ -31,7 +31,7 @@ for token in raw_word_tokens:
     cleaned_token = token.lower()
 
     #now remove the punctuation(commas,)
-    cleaned_oken = token.strip(string.punctuation)
+    cleaned_token = token.strip(string.punctuation)
 
     #count the number of letters in the token
     alphabetic_letter_count = 0
