@@ -39,16 +39,12 @@ The assignment focuses on text processing, working with CSV datasets, and basic 
 - **Question 10 (question 10.py)**  
   Implements a function that searches through a file and returns all line numbers and text where a keyword appears (case-insensitive).
 
----
-
 ## Output Files Included
 
 - high_engagement.csv  
 - student_bands.csv 
 - headings.txt 
 - wiki_table.csv
-
----
 
 ## Running the Code
 
