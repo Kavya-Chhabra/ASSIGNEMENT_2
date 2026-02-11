@@ -16,7 +16,7 @@ student_data = pd.read_csv("student.csv")
 #internet == 1 (has internet access)
 # absences <= 5
 high_engagement_students = student_data[
-    (student_data["study time"] >= 3) &
+    (student_data["studytime"] >= 3) &
     (student_data["internet"] >= 1) &
     (student_data["absences"] >= 5)
 ]
