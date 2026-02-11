@@ -16,9 +16,6 @@ input_text_file = open("sample-file.txt", "r", encoding="utf-8")
 #now read the file
 full_text_contents = input_text_file.read()
 
-#was done for debugging purposes to make sure code doesn't crash
-print("Chars in file:", len(full_text_contents))
-
 #good coding practice to always close a file
 input_text_file.close()
 
