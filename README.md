@@ -35,8 +35,8 @@ This repository contains my solutions for Assignment 2 in DATA 221.
 - **Question 10 (question 10.py)**  
   Implements a function that searches through a file and returns all line numbers and text where a keyword appears (case-insensitive).
 
-## Output Files Included
 
+## Output Files Included
 - high_engagement.csv  
 - student_bands.csv 
 - headings.txt 
