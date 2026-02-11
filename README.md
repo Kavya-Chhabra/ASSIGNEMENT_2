@@ -31,7 +31,7 @@ The assignment focuses on text processing, working with CSV datasets, and basic 
   Scrapes the Wikipedia page for Data Science and prints the page title along with the first main paragraph.
 
 - **Question 8 (question 8.py)**  
-  Extracts all main <h2> section headings from the Data Science Wikipedia page (excluding reference sections) and saves them to headings.txt.
+  Extracts all main <h2> section headings from the Data Science Wikipedia page excluding reference sections and saves them to headings.txt.
 
 - **Question 9 (question 9.py)**  
   Scrapes the Machine Learning Wikipedia page, finds the first table with at least 3 data rows, extracts the contents, and saves it as wiki_table.csv.
