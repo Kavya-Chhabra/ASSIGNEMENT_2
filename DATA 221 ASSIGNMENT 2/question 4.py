@@ -25,11 +25,11 @@ high_engagement_students = student_data[
 high_engagement_students.to_csv("high_engagement.csv", index=False)
 
 #Print how many students were saved
-num_students = len(high_engagement_students)
-print("Number of students saved:", num_students)
+number_of_students = len(high_engagement_students)
+print("Number of students saved:", number_of_students)
 
 #calculate and print the average grade of these students
-average_grade = high_engagement_students["grade"].mean()
+average_student_grade = high_engagement_students["grade"].mean()
 
 #makes readability better if I round to 2 decimal places
-print("Average grade:", round(average_grade,2))
+print("Average grade:", round(average_student_grade,2))
