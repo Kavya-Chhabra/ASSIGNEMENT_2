@@ -9,6 +9,7 @@
 #format: word -> count.
 
 import string
+from collections import Counter
 
 #first we must open the file in read mode and read everything inside of it
 text_file = open("sample-file.txt", "r", encoding="utf-8")
@@ -31,16 +32,17 @@ for token in raw_word_tokens:
     cleaned_token = token.lower()
 
     #now remove the punctuation(commas,)
-    cleaned_token = token.strip(string.punctuation)
+    cleaned_token = cleaned_token.strip(string.punctuation)
 
     #count the number of letters in the token
     alphabetic_letter_count = 0
     for character in cleaned_token:
         if character.isalpha():
             alphabetic_letter_count += 1
+
     #make sure to only keep the word if it has at least 2 letters
     if alphabetic_letter_count >= 2:
-        cleaned_word_list.append(token)
+        cleaned_word_list.append(cleaned_token)
 
 #make a dictionary to count word frequencies
 word_frequency_dictionary = {}
